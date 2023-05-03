@@ -20,12 +20,13 @@ class MelodyGeneration {
         }
     }
 
-    playMelody() {
+    async playMelody() {
         for (let i = 0; i < this.melody_notes.length; i++) {
-            noteOn(this.melody_notes[i], 127);
+            noteOn(this.melody_notes[i], 127, i);
             setTimeout(() => {
-                noteOff(this.melody_notes[i]);
-            }, 500 * this.durations.length);
+                noteOff(this.melody_notes[i], i);
+            }, 1000 * this.durations[i]);
+            await new Promise(r => setTimeout(r, 1000 * this.durations[i]));
           }
     }
 
@@ -35,6 +36,13 @@ class MelodyGeneration {
 
     returnAnswer() {
         return this.melody_notes;
+    }
+
+    extendUserNotes(note) {
+        this.user_notes.push(note);
+        while (this.user_notes.length > this.notes_in_melody) {
+            this.user_notes.shift();
+        }
     }
 }
 
@@ -102,7 +110,7 @@ function handleInput(input) {
     const command = input.data[0];
     const note = input.data[1];
     const velocity = input.data[2];
-    // console.log(command, note, velocity);
+    console.log(command, note, velocity);
 
     switch(command) {
         case 144:
@@ -114,10 +122,15 @@ function handleInput(input) {
     }
 }
 
-function noteOn(note, velocity) {
+function noteOn(note, velocity, order=-1) {
+    if (order == -1) {
+        melodyGeneration.extendUserNotes(note);
+        if (melodyGeneration.ifUserGuessedMelody()) {
+            console.log("You win!");
+        }
+    }
     const osc = ctx.createOscillator();
 
-    // console.log(oscillators);
     const oscGain = ctx.createGain();
     oscGain.gain.value = 0.33;
 
@@ -133,13 +146,16 @@ function noteOn(note, velocity) {
     velocityGain.connect(ctx.destination);
 
     osc.gain = oscGain;
-    oscillators[note.toString()] = osc;
+    oscillators[note.toString() + order.toString()] = osc;
     osc.start();
     console.log(osc);
+    console.log(oscillators);
+
 }
 
-function noteOff(note) {
-    const osc = oscillators[note.toString()]; 
+function noteOff(note, order=-1) {
+    const osc = oscillators[note.toString() + order.toString()];
+    console.log(osc); 
     const oscGain = osc.gain;
 
     oscGain.gain.setValueAtTime(oscGain.gain.value, ctx.currentTime);
@@ -150,7 +166,7 @@ function noteOff(note) {
         osc.disconnect();
     }, 20);
 
-    delete oscillators[note.toString()];
+    delete oscillators[note.toString() + order.toString()];
 }
 
 function updateDevices(event) {
