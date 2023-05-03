@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name ="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./app.js" async></script>
+    <title>Midi Synth</title>
+</head>
+<body>
+    <button id="ctx">Start CTX</button>
+    <div>
+        <link href="./style.css" rel="stylesheet" />
+        <div>
+          <button id="Answer">Answer</button>
+          <button id="Next">Next melody</button>
+          <button id="Play">Play melody</button>
+          <select class="home-select">
+            <option value="Midi" selected>Midi</option>
+            <option value="Use site piano">Use site piano</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Specify range, e.g. C3-F4"
+            class="home-textinput input"
+          />
+          <textarea
+            placeholder="Here will be answer"
+            class="home-textarea textarea"
+          ></textarea>
+        </div>
+      </div>
+</body>
+</html>
