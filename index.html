@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name ="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Midi Synth</title>
-</head>
-<body>
-    <button id="ctx">Start CTX</button>
-    <div>
-        <link href="./style.css" rel="stylesheet" />
-        <div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <button id="ctx">Start CTX</button>
+      <div>
+        <div class="blockWithButtons">
           <button id="Answer">Answer</button>
           <button id="Next">Next melody</button>
           <button id="Play">Play melody</button>
@@ -18,17 +19,50 @@
             <option value="Midi" selected>Midi</option>
             <option value="Use site piano">Use site piano</option>
           </select>
-          <input
-            type="text"
-            placeholder="Specify range, e.g. C3-F4"
-            class="home-textinput input"
-          />
+          <!-- <input
+				type="text"
+				placeholder="Specify range, e.g. C3-F4"
+				class="home-textinput input"
+			 /> -->
+          <!-- <input class="input-range" type="range" min="0" max="100" value="50" step="1">  -->
+
           <textarea
             placeholder="Here will be answer"
             class="home-textarea textarea"
           ></textarea>
         </div>
       </div>
-</body>
-<script src="./app.js" async></script>
+      <div class="range">
+        <div class="range-slider">
+          <span class="range-selected"></span>
+        </div>
+        <div class="range-input">
+          <input
+            type="range"
+            class="min"
+            min="0"
+            max="1000"
+            value="300"
+            step="100"
+          />
+          <input
+            type="range"
+            class="max"
+            min="0"
+            max="1000"
+            value="700"
+            step="100"
+          />
+        </div>
+        <div class="range-price">
+          <label for="min">Min</label>
+          <input type="number" name="min" value="300" />
+          <label for="max">Max</label>
+          <input type="number" name="max" value="700" />
+        </div>
+		  <div class="note"></div>
+      </div>
+    </div>
+  </body>
+  <script src="./app.js" async></script>
 </html>
