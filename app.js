@@ -2,16 +2,6 @@
 
 const notes = ["c", "d", "e", "f", "a", "b", "g", "l", "k", "o"];
 
-// const inputMinSlider = document.querySelector(".min");
-// const inputMaxSlider = document.querySelector(".max");
-// const inputSlider = document.querySelector(".range");
-
-// addEventListener("DOMContentLoaded", (event) => {
-//   const quantityOfNotes = notes.length;
-//   inputMinSlider.setAttribute("max", quantityOfNotes - 1);
-//   inputMaxSlider.setAttribute("max", quantityOfNotes);
-// });
-
 let rangeMin = 100;
 const range = document.querySelector(".range-selected");
 const rangeInput = document.querySelectorAll(".range-input input");
