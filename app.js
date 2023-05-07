@@ -60,6 +60,10 @@ rangePrice.forEach((input) => {
 
 // end of logic for slider
 
+function changeBackground(color) {
+  document.body.style.background = color;
+}
+
 class MelodyGeneration {
   constructor() {
     this.melody_notes = [];
@@ -74,6 +78,7 @@ class MelodyGeneration {
   }
 
   generateMelody() {
+    changeBackground('white');
     this.melody_notes = [];
     this.durations = [];
     while (this.melody_notes.length < this.notes_in_melody) {
@@ -191,6 +196,7 @@ function noteOn(note, velocity, order = -1) {
   if (order == -1) {
     melodyGeneration.extendUserNotes(note);
     if (melodyGeneration.ifUserGuessedMelody()) {
+      changeBackground('green')
       console.log("You win!");
     }
   }
