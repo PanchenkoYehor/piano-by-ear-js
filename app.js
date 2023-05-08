@@ -1,5 +1,3 @@
-// logic for slider
-
 var number_to_note_dict = {
   48 : "C3",
   49 : "C#3",
@@ -32,6 +30,8 @@ for(var key in number_to_note_dict) {
   var value = number_to_note_dict[key];
   number_to_note_dict_inv[value] = key;
 }
+
+let note_generate = 84, note_play = 85, note_answer = 86;
 
 let rangeMin = 4;
 const range = document.querySelector(".range-selected");
@@ -129,7 +129,7 @@ class MelodyGeneration {
     this.number_of_wins = -1;
     this.consfirmUserWins();
     document.getElementById("userAnswer").innerText = "";
-    
+
     this.melody_notes = [];
     this.durations = [];
     while (this.melody_notes.length < this.notes_in_melody) {
@@ -182,6 +182,7 @@ const showAnswerButton = document.getElementById("Answer");
 nextMelodyButton.addEventListener("click", () => {
   melodyGeneration.generateMelody();
   console.log("Melody was generated");
+  melodyGeneration.playMelody();
 });
 
 playMelodyButton.addEventListener("click", () => {
@@ -200,6 +201,7 @@ let ctx;
 
 const startButton = document.getElementById("ctx");
 const oscillators = {};
+startButton.click();
 
 startButton.addEventListener("click", () => {
   ctx = new AudioContext();
@@ -251,6 +253,13 @@ function handleInput(input) {
 }
 
 function noteOn(note, velocity, order = -1) {
+  if (note == note_answer) {
+    showAnswerButton.click();
+  } else if (note == note_generate) {
+    nextMelodyButton.click();
+  } else if (note == note_play) {
+    playMelodyButton.click();
+  }
   if (order == -1) {
     melodyGeneration.extendUserNotes(note);
     if (melodyGeneration.ifUserGuessedMelody()) {
