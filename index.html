@@ -26,10 +26,11 @@
 			 /> -->
           <!-- <input class="input-range" type="range" min="0" max="100" value="50" step="1">  -->
 
-          <textarea
+          <!-- <textarea
             placeholder="Here will be answer"
             class="home-textarea textarea"
-          ></textarea>
+            id="userNoteTextArea"
+          ></textarea> -->
         </div>
       </div>
       <div class="range">
@@ -43,7 +44,7 @@
             min="0"
             max="1000"
             value="300"
-            step="100"
+            step="1"
           />
           <input
             type="range"
@@ -51,17 +52,21 @@
             min="0"
             max="1000"
             value="700"
-            step="100"
+            step="1"
           />
         </div>
         <div class="range-price">
-          <label for="min">Min</label>
-          <input type="number" name="min" value="300" />
-          <label for="max">Max</label>
-          <input type="number" name="max" value="700" />
+          <label for="min">From</label>
+          <input type="string" name="min" value="C3" />
+          <label for="max">To</label>
+          <input type="string" name="max" value="B4" />
         </div>
 		  <div class="note"></div>
       </div>
+      <div class="userInfo">
+        <div class="userNote" id="userNote"><p>Your last note</p></div>
+        <div class="userGuesses" id="userGuesses"><p>Number of guesses: 0</p></div>
+        <div class="userAnswer" id="userAnswer"><p></p></div>
     </div>
   </body>
   <script src="./app.js" async></script>

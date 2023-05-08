@@ -2,14 +2,18 @@
  
 body {
 	font-family: Arial, sans-serif;
-	font-size: 16px;
+	font-size: 27px;
  }
 
  .container {
 	max-width: 1200px;
 	margin: 0 auto;
  }
- 
+
+ .userInfo {
+	max-width: 1200px;
+	margin: 0 auto;
+ }
  
  /* Center the "Start CTX" button */
  #ctx {
@@ -36,6 +40,7 @@ body {
 	cursor: pointer;
 	margin-right: 10px;
 	margin-bottom: 10px;
+  font-size: 27px;
  }
  
  /* Style the select dropdown */
@@ -46,6 +51,7 @@ body {
 	border: none;
 	margin-right: 10px;
 	margin-bottom: 10px;
+  font-size: 27px;
  }
  
  /* Style the text input
@@ -60,14 +66,15 @@ body {
  
  /* Style the text area */
  textarea {
-	padding: 10px;
+  font-size: 44pt;
+	/* padding: 10px; */
 	border-radius: 5px;
 	background-color: #f1f1f1;
 	border: none;
-	margin-right: 10px;
-	margin-bottom: 10px;
-	resize: vertical;
-	min-height: 100px;
+	/* margin-right: 10px; */
+	/* margin-bottom: 10px; */
+	/* resize: vertical; */
+	/* min-height: 100px; */
  } 
 
 /*styles for slider */
@@ -84,8 +91,8 @@ body {
 }
 .range-selected {
   height: 100%;
-  left: 30%;
-  right: 30%;
+  left: 0%;
+  right: 0%;
   position: absolute;
   border-radius: 5px;
   background-color: #1b53c0;
@@ -124,6 +131,7 @@ body {
 }
 
 .range-price {
+  font-size: 27px;
   margin: 30px 0;
   width: 100%;
   display: flex;
@@ -131,12 +139,35 @@ body {
   align-items: center;
 }
 .range-price label {
+  font-size: 27px;
   margin-right: 5px;
 }
 .range-price input {
-  width: 40px;
+  font-size: 27px;
+  width: 50px;
   padding: 5px;
 }
 .range-price input:first-of-type {
   margin-right: 15px;
+}
+
+.userNote {
+  color: navy;
+  text-indent: 30px;
+  /* text-transform: uppercase; */
+  font-size: 44px;
+}
+
+.userGuesses {
+  color: navy;
+  text-indent: 30px;
+  /* text-transform: uppercase; */
+  font-size: 44px;
+}
+
+.userAnswer {
+  color: navy;
+  text-indent: 30px;
+  /* text-transform: uppercase; */
+  font-size: 44px;
 }

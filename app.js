@@ -1,11 +1,50 @@
 // logic for slider
 
-const notes = ["c", "d", "e", "f", "a", "b", "g", "l", "k", "o"];
+var number_to_note_dict = {
+  48 : "C3",
+  49 : "C#3",
+  50 : "D3",
+  51 : "D#3",
+  52 : "E3",
+  53 : "F3",
+  54 : "F#3",
+  55 : "G3",
+  56 : "G#3",
+  57 : "A3",
+  58 : "A#3",
+  59 : "B3",
+  60 : "C4",
+  61 : "C#4",
+  62 : "D4",
+  63 : "D#4",
+  64 : "E4",
+  65 : "F4",
+  66 : "F#4",
+  67 : "G4",
+  68 : "G#4",
+  69 : "A4",
+  70 : "A#4",
+  71 : "B4"
+}
 
-let rangeMin = 100;
+var number_to_note_dict_inv = {}
+for(var key in number_to_note_dict) {
+  var value = number_to_note_dict[key];
+  number_to_note_dict_inv[value] = key;
+}
+
+let rangeMin = 4;
 const range = document.querySelector(".range-selected");
 const rangeInput = document.querySelectorAll(".range-input input");
 const rangePrice = document.querySelectorAll(".range-price input");
+
+rangeInput[0].value = 48;
+rangeInput[1].value = 71;
+
+rangeInput[0].min = 48;
+rangeInput[0].max = 71;
+rangeInput[1].min = 48;
+rangeInput[1].max = 71;
 
 rangeInput.forEach((input) => {
   input.addEventListener("input", (e) => {
@@ -18,23 +57,24 @@ rangeInput.forEach((input) => {
         rangeInput[1].value = minRange + rangeMin;
       }
     } else {
-      rangePrice[0].value = minRange;
-      rangePrice[1].value = maxRange;
-      console.log(maxRange);
+      rangePrice[0].value = number_to_note_dict[minRange];
+      rangePrice[1].value = number_to_note_dict[maxRange];
+      melodyGeneration.setNewNotesRange(minRange, maxRange);
+      
       const out = document.querySelector(".note");
-      // ОТСЮДА БАРТЬ ЦИФРЫ!!!!!!!!!!!!!!!!!
+      
       const pickedNotes = {
-        min: minRange / 100,
-        max: maxRange / 100,
+        min: number_to_note_dict[minRange],
+        max: number_to_note_dict[maxRange],
       };
-      out.innerHTML = "";
-      out.insertAdjacentText(
-        "afterbegin",
-        `От ноты : ${pickedNotes.min} до ноты: ${pickedNotes.max}  `
-      );
+      // out.innerHTML = "";
+      // out.insertAdjacentText(
+      //   "beforebegin",
+      //   `От ноты : ${pickedNotes.min} до ноты: ${pickedNotes.max}  `
+      // );
       // тут ломает синюю полоску
-      range.style.left = (minRange / rangeInput[0].max) * 100 + "%";
-      range.style.right = 100 - (maxRange / rangeInput[1].max) * 100 + "%";
+      range.style.left = ((minRange - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
+      range.style.right = 100 - ((maxRange - rangeInput[1].min) / (rangeInput[1].max - rangeInput[1].min) ) * 100 + "%";
     }
   });
 });
@@ -42,13 +82,12 @@ rangeInput.forEach((input) => {
 rangePrice.forEach((input) => {
   input.addEventListener("input", (e) => {
     console.log("pull");
-    let minPrice = rangePrice[0].value;
-    let maxPrice = rangePrice[1].value;
+    let minPrice = number_to_note_dict_inv[rangePrice[0].value];
+    let maxPrice = number_to_note_dict_inv[rangePrice[1].value];
     // console.log(maxPrice);
     if (maxPrice - minPrice >= rangeMin && maxPrice <= rangeInput[1].max) {
       if (e.target.className === "min") {
         rangeInput[0].value = minPrice;
-        // тут ломает синюю полоску
         range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
       } else {
         rangeInput[1].value = maxPrice;
@@ -61,7 +100,8 @@ rangePrice.forEach((input) => {
 // end of logic for slider
 
 function changeBackground(color) {
-  document.body.style.background = color;
+  document.getElementById("userGuesses").style.color = color;
+  // document.body.style.background = color;
 }
 
 class MelodyGeneration {
@@ -70,19 +110,30 @@ class MelodyGeneration {
     this.durations = [];
     this.user_notes = [];
     this.notes_in_melody = 4;
-    this.notes = [60, 61, 62, 63, 64];
+    this.note_range_first = 48;
+    this.note_range_last = 72;
+    this.number_of_wins = 0;
   }
 
-  getRandomInt(max) {
-    return Math.floor(Math.random() * max);
+  setNewNotesRange(first, last) {
+    this.note_range_first = first;
+    this.note_range_last = last;
+  }
+
+  getRandomNote() {
+    return Math.floor(Math.random() * (this.note_range_last - this.note_range_first)) + this.note_range_first;
   }
 
   generateMelody() {
-    changeBackground('white');
+    changeBackground('navy');
+    this.number_of_wins = -1;
+    this.consfirmUserWins();
+    document.getElementById("userAnswer").innerText = "";
+    
     this.melody_notes = [];
     this.durations = [];
     while (this.melody_notes.length < this.notes_in_melody) {
-      this.melody_notes.push(this.notes[this.getRandomInt(this.notes.length)]);
+      this.melody_notes.push(this.getRandomNote());
       this.durations.push(1);
     }
   }
@@ -102,6 +153,11 @@ class MelodyGeneration {
       JSON.stringify(this.melody_notes) ===
       JSON.stringify(this.user_notes.slice(-this.melody_notes.length))
     );
+  }
+
+  consfirmUserWins() {
+    this.number_of_wins += 1;
+    document.getElementById("userGuesses").innerText = `Number of guesses: ${this.number_of_wins}`
   }
 
   returnAnswer() {
@@ -134,7 +190,8 @@ playMelodyButton.addEventListener("click", () => {
 });
 
 showAnswerButton.addEventListener("click", () => {
-  console.log(melodyGeneration.returnAnswer());
+  // console.log(melodyGeneration.returnAnswer());
+  document.getElementById("userAnswer").innerText = "Answer: " + melodyGeneration.returnAnswer().map(x => number_to_note_dict[x]).join(", ");
 });
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -184,6 +241,7 @@ function handleInput(input) {
 
   switch (command) {
     case 144:
+      document.getElementById('userNote').innerText  = number_to_note_dict[note];
       noteOn(note, velocity);
       break;
     case 128:
@@ -196,8 +254,9 @@ function noteOn(note, velocity, order = -1) {
   if (order == -1) {
     melodyGeneration.extendUserNotes(note);
     if (melodyGeneration.ifUserGuessedMelody()) {
-      changeBackground('green')
-      console.log("You win!");
+      changeBackground('green');
+      melodyGeneration.consfirmUserWins();
+      // console.log("You win!");
     }
   }
   const osc = ctx.createOscillator();
