@@ -31,7 +31,7 @@ for(var key in number_to_note_dict) {
   number_to_note_dict_inv[value] = key;
 }
 
-let note_generate = 84, note_play = 85, note_answer = 86, note_ctx_start = 88;
+let note_generate = 84, note_play = 85, note_answer = 86;
 
 let rangeMin = 4;
 const range = document.querySelector(".range-selected");
@@ -195,13 +195,20 @@ showAnswerButton.addEventListener("click", () => {
   document.getElementById("userAnswer").innerText = "Answer: " + melodyGeneration.returnAnswer().map(x => number_to_note_dict[x]).join(", ");
 });
 
+function doc_keyUp(e) {
+  console.log(e);
+  if (e.ctrlKey && e.code === 'j') {
+      startButton.click();
+  }
+}
+document.addEventListener('keyup', doc_keyUp, false);
+
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 let ctx;
 
 const startButton = document.getElementById("ctx");
 const oscillators = {};
-startButton.click();
 
 startButton.addEventListener("click", () => {
   ctx = new AudioContext();
@@ -259,8 +266,6 @@ function noteOn(note, velocity, order = -1) {
     nextMelodyButton.click();
   } else if (note == note_play) {
     playMelodyButton.click();
-  } else if (note == note_ctx_start) {
-    startButton.click();
   } else {
     if (order == -1) {
       melodyGeneration.extendUserNotes(note);
