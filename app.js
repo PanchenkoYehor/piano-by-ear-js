@@ -31,7 +31,7 @@ for(var key in number_to_note_dict) {
   number_to_note_dict_inv[value] = key;
 }
 
-let note_generate = 84, note_play = 85, note_answer = 86;
+let note_generate = 84, note_play = 85, note_answer = 86, note_ctx_start = 88;
 
 let rangeMin = 4;
 const range = document.querySelector(".range-selected");
@@ -259,52 +259,57 @@ function noteOn(note, velocity, order = -1) {
     nextMelodyButton.click();
   } else if (note == note_play) {
     playMelodyButton.click();
-  }
-  if (order == -1) {
-    melodyGeneration.extendUserNotes(note);
-    if (melodyGeneration.ifUserGuessedMelody()) {
-      changeBackground('green');
-      melodyGeneration.consfirmUserWins();
-      // console.log("You win!");
+  } else if (note == note_ctx_start) {
+    startButton.click();
+  } else {
+    if (order == -1) {
+      melodyGeneration.extendUserNotes(note);
+      if (melodyGeneration.ifUserGuessedMelody()) {
+        changeBackground('green');
+        melodyGeneration.consfirmUserWins();
+        // console.log("You win!");
+      }
     }
+    const osc = ctx.createOscillator();
+
+    const oscGain = ctx.createGain();
+    oscGain.gain.value = 0.33;
+
+    const velocityGainAmount = (1 / 127) * velocity;
+    const velocityGain = ctx.createGain();
+    velocityGain.gain.value = velocityGainAmount;
+
+    osc.type = "sine";
+    osc.frequency.value = midiToFreq(note);
+
+    osc.connect(oscGain);
+    oscGain.connect(velocityGain);
+    velocityGain.connect(ctx.destination);
+
+    osc.gain = oscGain;
+    oscillators[note.toString() + order.toString()] = osc;
+    osc.start();
+    console.log(osc);
+    console.log(oscillators);
   }
-  const osc = ctx.createOscillator();
-
-  const oscGain = ctx.createGain();
-  oscGain.gain.value = 0.33;
-
-  const velocityGainAmount = (1 / 127) * velocity;
-  const velocityGain = ctx.createGain();
-  velocityGain.gain.value = velocityGainAmount;
-
-  osc.type = "sine";
-  osc.frequency.value = midiToFreq(note);
-
-  osc.connect(oscGain);
-  oscGain.connect(velocityGain);
-  velocityGain.connect(ctx.destination);
-
-  osc.gain = oscGain;
-  oscillators[note.toString() + order.toString()] = osc;
-  osc.start();
-  console.log(osc);
-  console.log(oscillators);
 }
 
 function noteOff(note, order = -1) {
-  const osc = oscillators[note.toString() + order.toString()];
-  console.log(osc);
-  const oscGain = osc.gain;
+  if (note.toString() + order.toString() in oscillators) {
+    const osc = oscillators[note.toString() + order.toString()];
+    console.log(osc);
+    const oscGain = osc.gain;
 
-  oscGain.gain.setValueAtTime(oscGain.gain.value, ctx.currentTime);
-  oscGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.03);
+    oscGain.gain.setValueAtTime(oscGain.gain.value, ctx.currentTime);
+    oscGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.03);
 
-  setTimeout(() => {
-    osc.stop();
-    osc.disconnect();
-  }, 20);
+    setTimeout(() => {
+      osc.stop();
+      osc.disconnect();
+    }, 20);
 
-  delete oscillators[note.toString() + order.toString()];
+    delete oscillators[note.toString() + order.toString()];
+  }
 }
 
 function updateDevices(event) {
