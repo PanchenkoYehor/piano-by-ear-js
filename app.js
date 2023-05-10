@@ -197,7 +197,8 @@ showAnswerButton.addEventListener("click", () => {
 
 function doc_keyUp(e) {
   console.log(e);
-  if (e.ctrlKey && e.code === 'j') {
+  if (e.key == 'j') {
+      console.log("clicked ctx");
       startButton.click();
   }
 }
