@@ -113,6 +113,7 @@ class MelodyGeneration {
     this.note_range_first = 48;
     this.note_range_last = 72;
     this.number_of_wins = 0;
+    this.only_white = new Boolean(false);
   }
 
   setNewNotesRange(first, last) {
@@ -125,6 +126,8 @@ class MelodyGeneration {
   }
 
   generateMelody() {
+    console.log("start generation");
+    this.only_white = document.getElementById("myonoffswitch").checked;
     changeBackground('navy');
     this.number_of_wins = -1;
     this.consfirmUserWins();
@@ -133,7 +136,11 @@ class MelodyGeneration {
     this.melody_notes = [];
     this.durations = [];
     while (this.melody_notes.length < this.notes_in_melody) {
-      this.melody_notes.push(this.getRandomNote());
+      let random_note = this.getRandomNote();
+      if (this.only_white && number_to_note_dict[random_note].includes('#')) {
+        continue;
+      }
+      this.melody_notes.push(random_note);
       this.durations.push(1);
     }
   }
@@ -170,7 +177,7 @@ class MelodyGeneration {
       this.user_notes.shift();
     }
   }
-}
+} 
 
 let melodyGeneration = new MelodyGeneration();
 melodyGeneration.generateMelody();
