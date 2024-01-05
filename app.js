@@ -25,6 +25,25 @@ var number_to_note_dict = {
   71 : "B4"
 }
 
+function toOrdinal(n) {
+  if (n === 0) return n;
+
+  const lastDigit = n % 10;
+  const lastTwoDigits = n % 100;
+
+  if (lastTwoDigits > 10 && lastTwoDigits < 20) {
+      return n + 'th';
+  } else if (lastDigit === 1) {
+      return n + 'st';
+  } else if (lastDigit === 2) {
+      return n + 'nd';
+  } else if (lastDigit === 3) {
+      return n + 'rd';
+  } else {
+      return n + 'th';
+  }
+}
+
 var number_to_note_dict_inv = {}
 for(var key in number_to_note_dict) {
   var value = number_to_note_dict[key];
@@ -125,6 +144,26 @@ class MelodyGeneration {
     return Math.floor(Math.random() * (this.note_range_last - this.note_range_first)) + this.note_range_first;
   }
 
+  getHint() {
+    const diff_melody = this.melody_notes.slice(1).map((item, index) => item - this.melody_notes[index]);
+    const diff_user = this.user_notes.slice(1).map((item, index) => item - this.user_notes[index]);
+    let hints = []
+    console.log(this.melody_notes)
+    console.log(diff_melody)
+    console.log('\n')
+    console.log(this.user_notes)
+    console.log(diff_user)
+    for (let i = 0; i < diff_user.length; i++) {
+      if (Math.sign(diff_melody[i]) != Math.sign(diff_user[i])) {
+        hints.push(`After ${toOrdinal(i + 1)} note you went into wrong direction`)
+      }
+    }
+    if (hints.length == 0) {
+        hints = ["Relative order is ok"]
+    }
+    return hints.join('\n')
+  }
+
   generateMelody() {
     console.log("start generation");
     this.only_white = document.getElementById("myonoffswitch").checked;
@@ -185,6 +224,7 @@ melodyGeneration.generateMelody();
 const nextMelodyButton = document.getElementById("Next");
 const playMelodyButton = document.getElementById("Play");
 const showAnswerButton = document.getElementById("Answer");
+const showHintButton = document.getElementById("Hint");
 
 nextMelodyButton.addEventListener("click", () => {
   melodyGeneration.generateMelody();
@@ -200,6 +240,11 @@ playMelodyButton.addEventListener("click", () => {
 showAnswerButton.addEventListener("click", () => {
   // console.log(melodyGeneration.returnAnswer());
   document.getElementById("userAnswer").innerText = "Answer: " + melodyGeneration.returnAnswer().map(x => number_to_note_dict[x]).join(", ");
+});
+
+showHintButton.addEventListener("click", () => {
+  // console.log(melodyGeneration.returnAnswer());
+  document.getElementById("userHint").innerText = melodyGeneration.getHint();
 });
 
 function doc_keyUp(e) {
@@ -258,8 +303,10 @@ function handleInput(input) {
 
   switch (command) {
     case 144:
-      document.getElementById('userNote').innerText  = number_to_note_dict[note];
+      // document.getElementById('userNote').innerText  = number_to_note_dict[note];
+      console.log(melodyGeneration.user_notes)
       noteOn(note, velocity);
+      document.getElementById('userNote').innerText  = melodyGeneration.user_notes.map(x => number_to_note_dict[x]).join(", ");
       break;
     case 128:
       noteOff(note);
